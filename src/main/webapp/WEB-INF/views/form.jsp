@@ -167,7 +167,7 @@
 
             <!-- STEP 4 -->
             <div data-step="3">
-                <h3>Wybierz organizacje, której chcesz pomóc:</h3>
+                <h3>Wybierz organizację, której chcesz pomóc:</h3>
 
                 <c:forEach items="${institutions}" var="item">
                     <div class="form-group form-group--checkbox">

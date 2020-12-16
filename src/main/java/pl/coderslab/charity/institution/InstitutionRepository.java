@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InstitutionRepository extends JpaRepository<Institution, Long> {
 
+    Institution findInstById(Long id);
 
 }

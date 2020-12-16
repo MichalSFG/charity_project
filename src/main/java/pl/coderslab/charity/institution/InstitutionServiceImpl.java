@@ -20,7 +20,22 @@ public class InstitutionServiceImpl implements InstitutionService {
     }
 
     @Override
+    public Institution findById(Long id) {
+        return institutionRepository.findInstById(id);
+    }
+
+    @Override
     public void add(Institution institution) {
         institutionRepository.save(institution);
+    }
+
+    @Override
+    public void update(Institution institution) {
+        institutionRepository.save(institution);
+    }
+
+    @Override
+    public void delete(Institution institution) {
+        institutionRepository.delete(institution);
     }
 }

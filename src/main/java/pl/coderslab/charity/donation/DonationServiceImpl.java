@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import pl.coderslab.charity.institution.Institution;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class DonationServiceImpl implements DonationService {
@@ -20,11 +21,6 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
-    public List<Donation> findByInstitution(Institution institution) {
-        return donationRepository.findDonationsByInstitution(institution);
-    }
-
-    @Override
     public Integer getBagsQuantity(List<Donation> list) {
         return list.stream().mapToInt(Donation::getQuantity).sum();
     }
@@ -32,5 +28,15 @@ public class DonationServiceImpl implements DonationService {
     @Override
     public void add(Donation donation) {
         donationRepository.save(donation);
+    }
+
+    @Override
+    public void delete(Donation donation) {
+        donationRepository.delete(donation);
+    }
+
+    @Override
+    public Optional<List<Donation>> findByInstitution(Institution institution) {
+        return donationRepository.findDonationsByInstitution(institution);
     }
 }

@@ -53,7 +53,7 @@ public class DonationController {
                 .map(Role::getName)
                 .collect(Collectors.toList());
         if (roles.contains("ROLE_ADMIN")) {
-            return "redirect:admin";
+            return "redirect:admin/home";
         }
 
         model.addAttribute("donation", new Donation());

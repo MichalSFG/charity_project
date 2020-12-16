@@ -59,6 +59,9 @@
                 </tbody>
             </table>
         </div>
+        <div>
+            <h4><a href="/admin/allInstitutions">Fundacje - lista</a></h4>
+        </div>
     </div>
 </div>
 </body>

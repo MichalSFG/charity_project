@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pl.coderslab.charity.institution.Institution;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface DonationService {
@@ -14,5 +15,7 @@ public interface DonationService {
 
     void add(Donation donation);
 
-    List<Donation> findByInstitution(Institution institution);
+    void delete(Donation donation);
+
+    Optional<List<Donation>> findByInstitution(Institution institution);
 }
