@@ -1,12 +1,14 @@
 package pl.coderslab.charity;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import pl.coderslab.charity.email.ConfirmationToken;
+import pl.coderslab.charity.email.ConfirmationTokenRepository;
+import pl.coderslab.charity.email.EmailService;
 import pl.coderslab.charity.user.AppUser;
 import pl.coderslab.charity.user.UserService;
 
@@ -17,9 +19,13 @@ import javax.validation.Valid;
 public class RegisterController {
 
     private final UserService userService;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final EmailService emailService;
 
-    public RegisterController(UserService userService) {
+    public RegisterController(UserService userService, ConfirmationTokenRepository confirmationTokenRepository, EmailService emailService) {
         this.userService = userService;
+        this.confirmationTokenRepository = confirmationTokenRepository;
+        this.emailService = emailService;
     }
 
     @GetMapping("/register")
@@ -44,9 +50,39 @@ public class RegisterController {
         if (byEmail != null) {
             model.addAttribute("email", "Ten email istnieje już w systemie! Wpisz inny!");
             return "register";
+        } else {
+            userService.saveUser(appUser);
+
+            ConfirmationToken confirmationToken = new ConfirmationToken(appUser);
+            confirmationTokenRepository.save(confirmationToken);
+
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setTo(appUser.getEmail());
+            mailMessage.setSubject("Complete Registration!");
+            mailMessage.setFrom("mickeyjas80@gmail.com");
+            mailMessage.setText("To confirm your account, please click here : http://localhost:8080/confirm-registration?token="
+                    + confirmationToken.getConfirmationToken());
+
+            emailService.sendEmail(mailMessage);
+            model.addAttribute("email", appUser.getEmail());
         }
 
-        userService.saveUser(appUser);
-        return "redirect:login";
+        return "activationLinkInfo";
+    }
+
+    @RequestMapping(value = "/confirm-registration", method = {RequestMethod.GET, RequestMethod.POST})
+    public String confirmUserRegistration(Model model, @RequestParam("token") String confirmationToken) {
+
+        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+
+        if (token != null) {
+            AppUser user = userService.findByEmail(token.getAppUser().getEmail());
+            user.setEnabled(1);
+            userService.updateUser(user);
+            model.addAttribute("message", "Congratulations! Your account has been activated and email is verified!");
+        } else {
+            model.addAttribute("message","The link is invalid or broken!");
+        }
+        return "successfulRegistration";
     }
 }

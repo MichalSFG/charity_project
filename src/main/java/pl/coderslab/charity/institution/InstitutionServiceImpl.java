@@ -20,6 +20,11 @@ public class InstitutionServiceImpl implements InstitutionService {
     }
 
     @Override
+    public List<Institution> findActivatedInstitutions() {
+        return institutionRepository.findAllByActivated();
+    }
+
+    @Override
     public Institution findById(Long id) {
         return institutionRepository.findInstById(id);
     }

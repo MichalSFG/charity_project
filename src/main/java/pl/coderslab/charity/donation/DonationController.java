@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.charity.category.Category;
 import pl.coderslab.charity.category.CategoryService;
+import pl.coderslab.charity.email.EmailService;
 import pl.coderslab.charity.institution.Institution;
 import pl.coderslab.charity.institution.InstitutionService;
 import pl.coderslab.charity.user.CurrentUser;
@@ -27,13 +28,15 @@ public class DonationController {
     private final DonationService donationService;
     private final InstitutionService institutionService;
     private final CategoryService categoryService;
+    private final EmailService emailService;
 
     private Donation newDonation;
 
-    public DonationController(DonationService donationService, InstitutionService institutionService, CategoryService categoryService) {
+    public DonationController(DonationService donationService, InstitutionService institutionService, CategoryService categoryService, EmailService emailService) {
         this.donationService = donationService;
         this.institutionService = institutionService;
         this.categoryService = categoryService;
+        this.emailService = emailService;
     }
 
     @ModelAttribute("categories")
@@ -53,7 +56,11 @@ public class DonationController {
                 .map(Role::getName)
                 .collect(Collectors.toList());
         if (roles.contains("ROLE_ADMIN")) {
-            return "redirect:admin/home";
+            return "redirect:/admin/home";
+        }
+
+        if (currentUser.getAppUser().getEnabled() == 0) {
+            return "redirect:/login";
         }
 
         model.addAttribute("donation", new Donation());

@@ -9,6 +9,8 @@ public interface InstitutionService {
 
     List<Institution> findAll();
 
+    List<Institution> findActivatedInstitutions();
+
     Institution findById(Long id);
 
     void add(Institution institution);

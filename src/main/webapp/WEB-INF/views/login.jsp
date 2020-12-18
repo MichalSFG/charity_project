@@ -14,8 +14,8 @@
 <header>
     <nav class="container container--70">
         <ul class="nav--actions">
-            <li><a href="#">Zaloguj</a></li>
-            <li class="highlighted"><a href="#">Załóż konto</a></li>
+            <li><a href="/login">Zaloguj</a></li>
+            <li class="highlighted"><a href="/register">Załóż konto</a></li>
         </ul>
 
         <ul>
@@ -32,6 +32,9 @@
     <h2>Zaloguj się</h2>
     <c:if test="${not empty param.error}">
         <h3 style="color: red">Wrong email or password!</h3>
+    </c:if>
+    <c:if test="${not empty denied}">
+        <h3 style="color: red">${denied}</h3>
     </c:if>
     <form:form method="post">
         <div class="form-group">

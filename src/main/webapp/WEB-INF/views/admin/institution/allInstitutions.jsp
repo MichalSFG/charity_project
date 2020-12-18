@@ -22,6 +22,14 @@
             <td>${item.description}</td>
             <td><a href="/admin/editInst?id=${item.id}">Edytuj</a>
                 <a href="/admin/deleteInst?id=${item.id}">Usuń</a>
+                <c:choose>
+                    <c:when test="${item.activated == false}">
+                        <a href="/admin/changeAccess/${item.id}">Aktywuj</a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/admin/changeAccess/${item.id}">Zablokuj</a>
+                    </c:otherwise>
+                </c:choose>
             </td>
         </tr>
     </c:forEach>

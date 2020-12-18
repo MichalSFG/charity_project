@@ -1,12 +1,12 @@
 package pl.coderslab.charity.institution;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
+@Data
 @Entity
 @Table(name = "institutions")
-@Data
 public class Institution {
 
     @Id
@@ -16,5 +16,7 @@ public class Institution {
     private String name;
 
     private String description;
+
+    private boolean isActivated;
 
 }

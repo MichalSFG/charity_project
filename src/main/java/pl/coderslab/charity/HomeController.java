@@ -37,7 +37,7 @@ public class HomeController {
 
     @ModelAttribute("evenInst")
     public List<Institution> evenInstitutions() {
-        List<Institution> institutions = institutionService.findAll();
+        List<Institution> institutions = institutionService.findActivatedInstitutions();
         List<Institution> even = new ArrayList<>();
         for (int i = 0; i < institutions.size(); i++) {
             if (i % 2 == 0) {
@@ -49,7 +49,7 @@ public class HomeController {
 
     @ModelAttribute("oddInst")
     public List<Institution> oddInstitutions() {
-        List<Institution> institutions = institutionService.findAll();
+        List<Institution> institutions = institutionService.findActivatedInstitutions();
         List<Institution> odd = new ArrayList<>();
         for (int i = 0; i < institutions.size(); i++) {
             if (i % 2 != 0) {
