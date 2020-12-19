@@ -56,14 +56,10 @@ public class RegisterController {
             ConfirmationToken confirmationToken = new ConfirmationToken(appUser);
             confirmationTokenRepository.save(confirmationToken);
 
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(appUser.getEmail());
-            mailMessage.setSubject("Complete Registration!");
-            mailMessage.setFrom("mickeyjas80@gmail.com");
-            mailMessage.setText("To confirm your account, please click here : http://localhost:8080/confirm-registration?token="
-                    + confirmationToken.getConfirmationToken());
+            emailService.sendSimpleMessage(appUser.getEmail(), "Complete Registration!",
+                    "To confirm your account, please click here : http://localhost:8080/confirm-registration?token="
+                            + confirmationToken.getConfirmationToken());
 
-            emailService.sendEmail(mailMessage);
             model.addAttribute("email", appUser.getEmail());
         }
 
@@ -85,4 +81,5 @@ public class RegisterController {
         }
         return "successfulRegistration";
     }
+
 }

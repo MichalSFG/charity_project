@@ -9,6 +9,7 @@
 <body>
 <h3>>>>Zmień dane fundacji:<<<</h3>
 <form:form method="post" modelAttribute="institution">
+    <form:hidden path="activated"/>
     <table style="width: auto">
         <tr>
             <th>Nazwa</th>

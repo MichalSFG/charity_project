@@ -7,16 +7,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.coderslab.charity.user.AppUser;
 import pl.coderslab.charity.user.CurrentUser;
+import pl.coderslab.charity.user.UserService;
 
 @Controller
 @Slf4j
 public class LoginController {
 
+    private final UserService userService;
+
+    public LoginController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/login")
-    public String login(@AuthenticationPrincipal CurrentUser user, Model model) {
+    public String login(@AuthenticationPrincipal CurrentUser currentUser, Model model) {
         try {
-            AppUser appUser = user.getAppUser();
-            if (appUser.getEnabled() == 0) {
+            AppUser byEmail = userService.findByEmail(currentUser.getAppUser().getEmail());
+            if (byEmail.getEnabled() == 0) {
                 model.addAttribute("denied", "Your account is not active!");
             }
         } catch (NullPointerException e) {

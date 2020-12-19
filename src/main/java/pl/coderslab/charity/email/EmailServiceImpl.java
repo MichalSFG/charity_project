@@ -20,10 +20,10 @@ public class EmailServiceImpl implements EmailService {
         this.emailSender = emailSender;
     }
 
+    @Async
     @Override
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("noreply@baeldung.com");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);

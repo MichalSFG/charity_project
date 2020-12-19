@@ -46,21 +46,22 @@ public class DonationController {
 
     @ModelAttribute("institutions")
     public List<Institution> institutions() {
-        return institutionService.findAll();
+        return institutionService.findActivatedInstitutions();
     }
 
     @GetMapping("/home")
     public String form(Model model, @AuthenticationPrincipal CurrentUser currentUser) {
+
+        if (currentUser.getAppUser().getEnabled() == 0) {
+            return "redirect:/login";
+        }
+
         List<String> roles = currentUser.getAppUser().getRoles()
                 .stream()
                 .map(Role::getName)
                 .collect(Collectors.toList());
         if (roles.contains("ROLE_ADMIN")) {
             return "redirect:/admin/home";
-        }
-
-        if (currentUser.getAppUser().getEnabled() == 0) {
-            return "redirect:/login";
         }
 
         model.addAttribute("donation", new Donation());

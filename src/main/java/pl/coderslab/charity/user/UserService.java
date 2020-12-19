@@ -9,5 +9,7 @@ public interface UserService {
 
     void saveUser(AppUser appUser);
 
+    void saveUserWhenPasswordIsChanged(AppUser appUser, String password);
+
     void updateUser(AppUser appUser);
 }
