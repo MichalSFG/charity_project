@@ -16,9 +16,12 @@ import pl.coderslab.charity.user.Role;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -75,10 +78,57 @@ public class DonationController {
         if (result.hasErrors()) {
             return "form";
         }
+
         donation.setAppUser(currentUser.getAppUser());
+        donation.setPickedUp(!LocalDateTime.of(donation.getPickUpDate(), donation.getPickUpTime()).isAfter(LocalDateTime.now()));
+        donation.prePersist();
         donationService.add(donation);
+        emailService.sendSimpleMessage(currentUser.getAppUser().getEmail(), "Donation pick up time",
+                "Data odbioru donacji przez kuriera: " + donation.getPickUpDate() + " o godz. " + donation.getPickUpTime());
         model.addAttribute("user", currentUser.getAppUser());
         return "confirmation";
+    }
+
+    @RequestMapping("/donations")
+    public String usersDonations(@AuthenticationPrincipal CurrentUser currentUser, Model model) {
+        List<Donation> donations = donationService.findByUser(currentUser.getAppUser());
+        donations.forEach(donation -> {
+            LocalDateTime dateTime = LocalDateTime.of(donation.getPickUpDate(), donation.getPickUpTime());
+            donation.setPickedUp(!dateTime.isAfter(LocalDateTime.now()));
+            donationService.update(donation);
+        });
+
+        List<Donation> pickedUpDon = new ArrayList<>();
+        List<Donation> notPickedUpDon = new ArrayList<>();
+
+        List<Donation> updatedDonations = donationService.findByUser(currentUser.getAppUser());
+        updatedDonations.forEach(donation -> {
+            if (donation.isPickedUp()) {
+                pickedUpDon.add(donation);
+            } else
+                notPickedUpDon.add(donation);
+        });
+
+        pickedUpDon.sort(Comparator.comparing(d -> LocalDateTime.of(d.getPickUpDate(), d.getPickUpTime())));
+
+        model.addAttribute("pickedUpDon", pickedUpDon);
+        model.addAttribute("notPickedUpDon", notPickedUpDon);
+        return "user/donations";
+    }
+
+    @RequestMapping("/donationDetails")
+    public String donDetails(@RequestParam Long id, Model model) {
+        Optional<Donation> don = donationService.findDonationById(id);
+        don.ifPresent(donation -> model.addAttribute("donation", donation));
+        return "user/donationDetails";
+    }
+
+    @PostMapping("/changeStatus")
+    public String changeDonationStatus(Donation donation) {
+        donation.setPickUpDate(LocalDate.now());
+        donation.setPickUpTime(LocalTime.now());
+        donationService.update(donation);
+        return "redirect:/donations";
     }
 
     @GetMapping("/form2")

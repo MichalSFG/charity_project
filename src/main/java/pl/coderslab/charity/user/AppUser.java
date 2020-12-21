@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import java.util.Set;
 
 @Entity
@@ -25,6 +26,7 @@ public class AppUser {
     private String email;
 
     @NotBlank
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[*.!@#$%^&(){}\\[\\]:;<>,?/~_+\\-=|])(?=\\S+$).{8,}$")
     private String password;
 
     private int enabled;

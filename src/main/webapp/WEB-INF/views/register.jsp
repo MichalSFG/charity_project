@@ -48,7 +48,7 @@
         <div class="form-group">
             <form:input path="email" placeholder="Email" />
         </div>
-        <h3 style="color: red"><form:errors path="password">Wpisz hasło!</form:errors></h3>
+        <h3 style="color: red"><form:errors path="password">Wpisz hasło (min 8 znaków) zawierające: wielką literę, małą literę, cyfrę i znak specjalny</form:errors></h3>
         <div class="form-group">
             <form:password path="password" placeholder="Hasło" />
         </div>

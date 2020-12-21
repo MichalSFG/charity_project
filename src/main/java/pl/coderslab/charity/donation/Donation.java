@@ -10,6 +10,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class Donation {
     @ManyToOne
     private AppUser appUser;
 
+    private LocalDateTime created;
+
     private String street;
     private String city;
     private String zipCode;
@@ -43,4 +46,10 @@ public class Donation {
     private LocalDate pickUpDate;
     private LocalTime pickUpTime;
     private String pickUpComment;
+    private boolean pickedUp;
+
+    @PrePersist
+    public void prePersist() {
+        created = LocalDateTime.now();
+    }
 }
